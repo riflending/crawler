@@ -12,6 +12,7 @@ module.exports = {
     bkex: 'https://api.bkex.com/v1', // https://github.com/bkexexchange/bkex-official-api-docs,
     coinbene: 'https://openapi-exchange.coinbene.com//api/exchange/v2', // https://github.com/Coinbene/API-SPOT-v2-Documents/blob/master/openapi-spot-rest-en.md
     //BTC
-    huobi: 'https://api.huobi.pro', //https://huobiapi.github.io/docs/spot/v1/en/#interface-type
-    hitbtc: 'https://api.hitbtc.com/api/2', //https://api.hitbtc.com/
+    // Huobi FUE COMENTADA ya que devolvio 0 en varias ocaciones
+    // huobi: 'https://api.huobi.pro', // https://huobiapi.github.io/docs/spot/v1/en/#interface-type
+    hitbtc: 'https://api.hitbtc.com/api/2', // https://api.hitbtc.com/#tickers
 }

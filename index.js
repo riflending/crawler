@@ -5,9 +5,7 @@ const mocOracleAbi = require('./abis/mocOracle.json')
 const rskOracleAbi = require('./abis/rskOracle.json')
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
-function toDateAndTime(timestamp) {
-    return new Date(timestamp*1000).toLocaleString()
-}
+
 async function main() {
     const provider = new ethers.providers.JsonRpcProvider(config.provider)
     const rskBtcOracle = new ethers.Contract( config.rskBtcOracleAddr , rskOracleAbi , provider )
@@ -21,13 +19,13 @@ async function main() {
             {id: 'source', title: 'source'},
             {id: 'asset', title: 'asset'},
             {id: 'price', title: 'price'},
-            {id: 'timestamp', title: 'timestamp'},
+            {id: 'date', title: 'date'},
             {id: 'runAt', title: 'runAt'}
         ]
     });
 
     setInterval(async () => {
-        const  currentTime = new Date().toLocaleString()
+        const  currentTime = new Date()
         console.log('FETCHING DATA', currentTime)
         // RSK RBTC
         try {
@@ -36,8 +34,8 @@ async function main() {
                 source: 'rskOracle',
                 asset: 'BTC',
                 price: ethers.utils.formatEther(rskRbtcResult.price),
-                timestamp: toDateAndTime(rskRbtcResult.timestamp),
-                runAt: currentTime
+                date: new Date(parseInt(rskRbtcResult.timestamp)).toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('RSK BTC ORACLE ERROR', err)
@@ -50,8 +48,8 @@ async function main() {
                 source: 'mocOracle',
                 asset: 'BTC',
                 price: ethers.utils.formatEther(mocRbtcResult[0]),
-                timestamp: 'unknown',
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('MOC BTC ORACLE ERROR', err)
@@ -64,8 +62,8 @@ async function main() {
                 source: 'mocOracle',
                 asset: 'RIF',
                 price: ethers.utils.formatEther(mocRifResult[0]),
-                timestamp: 'unknown',
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('MOC RIF ORACLE ERROR', err)
@@ -78,8 +76,8 @@ async function main() {
                 source: 'binanace',
                 asset: 'BTC',
                 price: binanceBtcResult.data.price,
-                timestamp: currentTime,
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('BINANCE BTC ERROR', err)
@@ -92,8 +90,8 @@ async function main() {
                 source: 'binanace',
                 asset: 'RIF',
                 price: binanceRifResult.data.price,
-                timestamp: currentTime,
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('BINANCE RIF ERROR', err)
@@ -106,8 +104,8 @@ async function main() {
                 source: 'coingeko',
                 asset: 'RBTC',
                 price: coingekoRbtcResult.data['rootstock'].usd,
-                timestamp: currentTime,
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('COINGEKO RBTC ERROR', err)
@@ -120,8 +118,8 @@ async function main() {
                 source: 'coingeko',
                 asset: 'BTC',
                 price: coingekoBtcResult.data['bitcoin'].usd,
-                timestamp: currentTime,
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('COINGEKO BTC ERROR', err)
@@ -134,8 +132,8 @@ async function main() {
                 source: 'coingeko',
                 asset: 'RIF',
                 price: coingekoRifResult.data['rif-token'].usd,
-                timestamp: currentTime,
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('COINGEKO RIF ERROR', err)
@@ -148,8 +146,8 @@ async function main() {
                 source: 'kucoin',
                 asset: 'RBTC-BTC',
                 price: KuCoinRbtcResult.data.data.price,
-                timestamp: toDateAndTime(KuCoinRbtcResult.data.data.time),
-                runAt: currentTime
+                date: new Date(parseInt(KuCoinRbtcResult.data.data.time)).toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('KUCOIN RBTC-BTC ERROR', err)
@@ -162,8 +160,8 @@ async function main() {
                 source: 'kucoin',
                 asset: 'RIF-BTC',
                 price: KuCoinRifResult.data.data.price,
-                timestamp: toDateAndTime(KuCoinRifResult.data.data.time),
-                runAt: currentTime
+                date: new Date(KuCoinRifResult.data.data.time).toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('KUCOIN RIF-BTC ERROR', err)
@@ -176,8 +174,8 @@ async function main() {
                 source: 'kucoin',
                 asset: 'BTC',
                 price: KuCoinBtcResult.data.data.price,
-                timestamp: toDateAndTime(KuCoinBtcResult.data.data.time),
-                runAt: currentTime
+                date: new Date(parseInt(KuCoinBtcResult.data.data.time)).toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('KUCOIN BTC ERROR', err)
@@ -190,8 +188,8 @@ async function main() {
                 source: 'bitfinex',
                 asset: 'BTC',
                 price: bitfinexBtcResult.data[6],
-                timestamp: currentTime,
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('BITFINEX BTC ERROR', err)
@@ -204,8 +202,8 @@ async function main() {
                 source: 'bitfinex',
                 asset: 'RIF',
                 price: bitfinexRifResult.data[6],
-                timestamp: currentTime,
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('BITFINEX RIF ERROR', err)
@@ -218,8 +216,8 @@ async function main() {
                 source: 'bkex',
                 asset: 'BTC',
                 price: bkexBtcResult.data.data.price,
-                timestamp: currentTime,
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('BKEX BTC ERROR', err)
@@ -232,8 +230,8 @@ async function main() {
                 source: 'bkex',
                 asset: 'RIF',
                 price: bkexRifResult.data.data.price,
-                timestamp: currentTime,
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('BKEX RIF ERROR', err)
@@ -246,8 +244,8 @@ async function main() {
                 source: 'coinbene',
                 asset: 'BTC',
                 price: coinbeneBtcResult.data.data.latestPrice,
-                timestamp: currentTime,
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('COINBENE BTC ERROR', err)
@@ -260,12 +258,89 @@ async function main() {
                 source: 'coinbene',
                 asset: 'RIF-BTC',
                 price: coinbeneRifResult.data.data.latestPrice,
-                timestamp: currentTime,
-                runAt: currentTime
+                date: currentTime.toISOString(),
+                runAt: currentTime.toISOString()
             })
         } catch(err) {
             console.error('COINBENE RIF ERROR', err)
         }
+
+        // HUOBI FUE COMENTADA ya que devolvio 0 en varias ocaciones
+        // // huobi RBTC
+        // // huobi RBTC ERROR Error: connect ECONNREFUSED 127.0.0.1:80
+        // try {
+        //     const huobiRbtcResult = await axios.get(config.huobi + '/market/trade?symbol=rbtcbtc')
+        //     let fomatedResult = {
+        //         price: 0,
+        //         ts: huobiRbtcResult.data.ts
+        //     }
+        //     if(huobiRbtcResult.data.tick) {
+        //         fomatedResult.price = huobiRbtcResult.data.tick.data[0].price
+        //         fomatedResult.ts = huobiRbtcResult.data.tick.data.ts
+        //     }
+
+        //     records.push({
+        //         source: 'huobi',
+        //         asset: 'RBTC-BTC',
+        //         price: fomatedResult.price,
+        //         date: new Date(parseInt(fomatedResult.ts)).toISOString(),
+        //         runAt: currentTime.toISOString()
+        //     })
+        // } catch(err) {
+        //     console.error('huobi RBTC ERROR', err)
+        // }
+
+        // // HUOBI BTC
+        // try {
+        //     const huobiBtcResult = await axios.get(config.huobi + '/market/trade?symbol=btcusdt')
+        //     let fomatedResult = {
+        //         price: 0,
+        //         ts: huobiBtcResult.data.ts
+        //     }
+        //     if(huobiBtcResult.data.tick) {
+        //         fomatedResult.price = huobiBtcResult.data.tick.data[0].price
+        //         fomatedResult.ts = huobiBtcResult.data.tick.data.ts
+        //     }
+        //     records.push({
+        //         source: 'huobi',
+        //         asset: 'BTC',
+        //         price: huobiBtcResult.data.tick.price,
+        //         date: new Date(parseInt(huobiBtcResult.data.tick.ts)).toISOString(),
+        //         runAt: currentTime.toISOString()
+        //     })
+        // } catch(err) {
+        //     console.error('huobi BTC ERROR', err)
+        // }
+
+
+        // HITBTC BTC
+        try {
+            const hitbtcBtcResult = await axios.get(config.hitbtc + '/public/ticker?symbols=BTCUSD')
+            records.push({
+                source: 'hitbtc',
+                asset: 'BTC',
+                price: hitbtcBtcResult.data[0].last,
+                date: new Date(hitbtcBtcResult.data[0].timestamp).toISOString(),
+                runAt: currentTime.toISOString()
+            })
+        } catch(err) {
+            console.error('HITBTC BTC ERROR', err)
+        }
+
+        // HITBTC RIF
+        try {
+            const hitbtcRifResult = await axios.get(config.hitbtc + '/public/ticker?symbols=RIFBTC')
+            records.push({
+                source: 'hitbtc',
+                asset: 'RIF-BTC',
+                price: hitbtcRifResult.data[0].last,
+                date: new Date(hitbtcRifResult.data[0].timestamp).toISOString(),
+                runAt: currentTime.toISOString()
+            })
+        } catch(err) {
+            console.error('HITBTC RIF ERROR', err)
+        }
+
         console.log('WRITING DATA')
         await csvWriter.writeRecords(records)
 
