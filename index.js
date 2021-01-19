@@ -15,7 +15,6 @@ async function main() {
     const mocRifOracle = new ethers.Contract( config.mocRifOracleAddr , mocOracleAbi , provider )
 
     const records = []
-    const  currentTime = new Date().toLocaleString()
     const csvWriter = createCsvWriter({
         path: './data.csv',
         header: [
@@ -28,7 +27,8 @@ async function main() {
     });
 
     setInterval(async () => {
-        console.log('FETCHING DATA')
+        const  currentTime = new Date().toLocaleString()
+        console.log('FETCHING DATA', currentTime)
         // RSK RBTC
         try {
             const rskRbtcResult = await rskBtcOracle.getPricing()
